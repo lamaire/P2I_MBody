@@ -104,8 +104,8 @@ public class VTITask : IP2ITask
         switch (step)
         {
             case VTISteps.TrialRunning:
-                // Nothing
                 taskStep = "TrialRunning";
+                UnityEngine.Debug.Log("Please press the keyboard (W, X or Z) when you hear the beep.");
                 break;
 
             case VTISteps.WaitingResponse:
@@ -127,7 +127,7 @@ public class VTITask : IP2ITask
                 if (trialIndex >= numberOfTrials)
                 {
                     UnityEngine.Debug.Log("END EXPERIMENT");
-                    UnityEngine.Debug.Log("=== REACTION TIMES (s) ===");
+                    UnityEngine.Debug.Log("=== REACTION TIMES ===");
                     UnityEngine.Debug.Log(string.Join(", ", reactionTimes.ConvertAll(rt => rt.ToString("0.000"))));
                     UnityEngine.Debug.Log("=== DISTANCES ===");
                     UnityEngine.Debug.Log(string.Join(", ", distancesTrial.ConvertAll(d => d.ToString("0.00"))));
@@ -230,7 +230,7 @@ public class VTITask : IP2ITask
 
         if (stimulus != null)
             GameObject.Destroy(stimulus);
-        
+
         SpawnSphere();
 
         targetDistance = shuffledNewDistancesList[trialIndex];

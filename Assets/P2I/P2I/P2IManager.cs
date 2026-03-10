@@ -1,6 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements.Experimental;
+#if UNITY_EDITOR
+using System;
+using System.Reflection;
+using UnityEditor;
+#endif
 
 public enum ExpeSteps { Menu, Launching, RunningTask, Ending }
 public enum TaskTypes { VTI, TB } // Visuo-Tactile Integration & Temporal Binding
@@ -94,6 +99,9 @@ public class P2IManager : MonoBehaviour
     void GoToMenu()
     {
         currentTask?.ExitTask();
+#if UNITY_EDITOR
+        ClearConsole();
+#endif
         step = ExpeSteps.Menu;
         myUI.SwitchToScreen(myUI.screenMainMenu);
     }
@@ -121,4 +129,14 @@ public class P2IManager : MonoBehaviour
                 return new TBTask(graspAction, lookAction);
         }
     }
+
+#if UNITY_EDITOR
+    private void ClearConsole()
+    {
+        var assembly = Assembly.GetAssembly(typeof(SceneView));
+        var logEntriesType = assembly.GetType("UnityEditor.LogEntries");
+        var clearMethod = logEntriesType.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
+        clearMethod.Invoke(null, null);
+    }
+#endif
 }

@@ -79,8 +79,6 @@ public class TBTask : IP2ITask
                 if (grasp.WasPressedThisFrame())
                 {
                     UnityEngine.Debug.Log("Keyboard pressed !");
-                    UnityEngine.Debug.Log($"Target duration : {targetDuration} ms");
-
                     trialSw.Restart();
                     step = TBSteps.WaitingBeepDelay;
                 }
@@ -97,7 +95,6 @@ public class TBTask : IP2ITask
                     step = TBSteps.WaitingResponse;
                 }
                 break;
-
 
             case TBSteps.WaitingResponse:
 
