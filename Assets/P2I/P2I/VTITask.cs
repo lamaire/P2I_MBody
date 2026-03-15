@@ -31,7 +31,7 @@ public class VTITask : IP2ITask
     public List<float> distancesTrial = new List<float>();
     private float targetDistance;
     private readonly Stopwatch interTrialSw = new Stopwatch();
-    private const int interTrialMs = 800; //800 ms
+    private const int interTrialMs = 10000; //800 ms
     public bool forceNextTrial = false;
 
     public int TrialIndex => trialIndex;

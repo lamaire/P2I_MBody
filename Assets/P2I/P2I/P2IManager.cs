@@ -93,7 +93,7 @@ public class P2IManager : MonoBehaviour
         myUI.buttonVTI.onClick.AddListener(() => OnClickLaunch(TaskTypes.VTI));
         myUI.buttonTB.onClick.AddListener(() => OnClickLaunch(TaskTypes.TB));
         myUI.buttonMenu.onClick.AddListener(() => GoToMenu());
-        myUI.buttonMenu.onClick.AddListener(() => currentTask?.RequestNextTrial());
+        myUI.buttonTrial.onClick.AddListener(() => currentTask?.RequestNextTrial());
     }
 
     void GoToMenu()
