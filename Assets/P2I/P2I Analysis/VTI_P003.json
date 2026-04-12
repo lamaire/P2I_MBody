@@ -1,0 +1,29 @@
+{
+    "taskName": "VTI",
+    "trials": [
+        {
+            "distance": 45,
+            "reactionTime": 457.21435546875
+        },
+        {
+            "distance": 60,
+            "reactionTime": 541.3909912109375
+        },
+        {
+            "distance": 90,
+            "reactionTime": 632.5454711914063
+        },
+        {
+            "distance": 30,
+            "reactionTime": 434.600830078125
+        },
+        {
+            "distance": 15,
+            "reactionTime": 404.21051025390627
+        },
+        {
+            "distance": 75,
+            "reactionTime": 580.2154541015625
+        }
+    ]
+}

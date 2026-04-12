@@ -1,0 +1,17 @@
+{
+    "taskName": "TB",
+    "trials": [
+        {
+            "trueDelay": 700,
+            "estimatedDelay": 645
+        },
+        {
+            "trueDelay": 300,
+            "estimatedDelay": 289
+        },
+        {
+            "trueDelay": 500,
+            "estimatedDelay": 473
+        }
+    ]
+}
