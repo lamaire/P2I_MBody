@@ -1,33 +1,35 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements.Experimental;
-#if UNITY_EDITOR
-using System;
-using System.Reflection;
-using UnityEditor;
-#endif
-
-public enum ExpeSteps { Menu, Launching, RunningTask, Ending }
-public enum TaskTypes { VTI, TB } // Visuo-Tactile Integration & Temporal Binding
 
 public class P2IManager : MonoBehaviour
 {
+    public enum ExpeSteps { Menu, Launching, RunningTask, Ending }
+    public enum TaskTypes { VTI, TB } // Visuo-Tactile Integration & Temporal Binding
     P2IUI myUI;
     ExpeSteps step = ExpeSteps.Menu;
     IP2ITask currentTask;
     InputAction graspAction; // Keyboard : W, Z or X
     InputAction lookAction; // Keyboard : arrows
-    private bool timeSliderVisible = false;
+    InputAction sliderAdjustAction;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        myUI = GameObject.Find("InterfaceP2I").GetComponent<P2IUI>();
+        graspAction = InputSystem.actions.FindAction("Grasp");
+        lookAction = InputSystem.actions.FindAction("HeadLook");
+        sliderAdjustAction = InputSystem.actions.FindAction("SliderAdjust");
 
-        BindInput();
-        BindUI();
+        SetUpUI();
         GoToMenu();
-
+    }
+    void SetUpUI()
+    {
+        myUI = GameObject.Find("InterfaceP2I").GetComponent<P2IUI>();
+        myUI.buttonVTI.onClick.AddListener(() => OnClickLaunch(TaskTypes.VTI));
+        myUI.buttonTB.onClick.AddListener(() => OnClickLaunch(TaskTypes.TB));
+        myUI.buttonMenu.onClick.AddListener(() => GoToMenu());
+        myUI.buttonTrial.onClick.AddListener(() => currentTask?.RequestNextTrial()); // CHANGED : Je m'étais trompée ici c'est buttonTrial et non buttonMenu !
     }
 
     // Update is called once per frame
@@ -47,61 +49,12 @@ public class P2IManager : MonoBehaviour
                 else
                     myUI.buttonTrial.interactable = false;
             }
-
-            if (currentTask is TBTask && currentTask.TaskStep == "WaitingResponse")
-            {
-                // Slider management
-                if (!timeSliderVisible)
-                {
-                    myUI.ShowTimeSlider();
-                    myUI.ResetTimeSlider(0f);
-                    timeSliderVisible = true;
-                }
-
-                if (Keyboard.current.enterKey.wasPressedThisFrame)
-                {
-                    float estimate = myUI.GetSliderValue();
-
-                    if (currentTask is TBTask tbTask)
-                    {
-                        tbTask.RegisterEstimate(estimate);
-                    }
-
-                    myUI.HideTimeSlider();
-                    timeSliderVisible = false;
-                }
-            }
-            else
-            {
-                if (timeSliderVisible)
-                {
-                    myUI.HideTimeSlider();
-                    timeSliderVisible = false;
-                }
-            }
         }
-    }
-
-    void BindInput()
-    {
-        graspAction = InputSystem.actions.FindAction("Grasp");
-        lookAction = InputSystem.actions.FindAction("HeadLook");
-    }
-
-    void BindUI()
-    {
-        myUI.buttonVTI.onClick.AddListener(() => OnClickLaunch(TaskTypes.VTI));
-        myUI.buttonTB.onClick.AddListener(() => OnClickLaunch(TaskTypes.TB));
-        myUI.buttonMenu.onClick.AddListener(() => GoToMenu());
-        myUI.buttonTrial.onClick.AddListener(() => currentTask?.RequestNextTrial());
     }
 
     void GoToMenu()
     {
         currentTask?.ExitTask();
-#if UNITY_EDITOR
-        ClearConsole();
-#endif
         step = ExpeSteps.Menu;
         myUI.SwitchToScreen(myUI.screenMainMenu);
     }
@@ -126,17 +79,7 @@ public class P2IManager : MonoBehaviour
             case TaskTypes.VTI:
                 return new VTITask(graspAction, lookAction);
             default:
-                return new TBTask(graspAction, lookAction);
+                return new TBTask(graspAction, lookAction, sliderAdjustAction);
         }
     }
-
-#if UNITY_EDITOR
-    private void ClearConsole()
-    {
-        var assembly = Assembly.GetAssembly(typeof(SceneView));
-        var logEntriesType = assembly.GetType("UnityEditor.LogEntries");
-        var clearMethod = logEntriesType.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
-        clearMethod.Invoke(null, null);
-    }
-#endif
 }

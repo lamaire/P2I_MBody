@@ -20,6 +20,10 @@ public class VTITask : IP2ITask
     float onsetTime;
     bool beeped;
 
+    // Vibrators
+    // byte[] mtxVibComm;
+    // SerialPort sPort;
+
     // Trials
     private List<float> distancesList = new List<float> { 0.15f, 0.30f, 0.45f, 0.60f, 0.75f, 0.90f };
     public static int numberOfTrials = 7;
@@ -31,8 +35,9 @@ public class VTITask : IP2ITask
     public List<float> distancesTrial = new List<float>();
     private float targetDistance;
     private readonly Stopwatch interTrialSw = new Stopwatch();
-    private const int interTrialMs = 10000; //800 ms
+    private const int interTrialMs = 800; //800 ms
     public bool forceNextTrial = false;
+    private bool dataSaved = false;
 
     public int TrialIndex => trialIndex;
     public int NumberOfTrials => numberOfTrials;
@@ -52,6 +57,7 @@ public class VTITask : IP2ITask
 
     public void EnterTask()
     {
+        //SetupVibr();
         SpawnCube();
         headLook.EnterHeadLook();
         trialIndex = 0;
@@ -89,6 +95,20 @@ public class VTITask : IP2ITask
         LaunchNewTrial();
     }
 
+    // private void SetupVibr()
+    // {
+    //     sPort = new SerialPort
+    //     {
+    //         PortName = "COM4", //COM4 or COM6 depending on computer
+    //         WriteTimeout = 0,
+    //         BaudRate = 115200
+    //     };
+
+    //     sPort.Open();
+
+    //     mtxVibComm = Encoding.UTF8.GetBytes("VibeTimeR:0.0.[0-24]\t100\t0\t200\r");
+    // }
+
     public void UpdateTask()
     {
         headLook.UpdateHeadLook();
@@ -104,8 +124,8 @@ public class VTITask : IP2ITask
         switch (step)
         {
             case VTISteps.TrialRunning:
+                // Nothing
                 taskStep = "TrialRunning";
-                UnityEngine.Debug.Log("Please press the keyboard (W, X or Z) when you hear the beep.");
                 break;
 
             case VTISteps.WaitingResponse:
@@ -114,7 +134,7 @@ public class VTITask : IP2ITask
                 if (grasp.WasPressedThisFrame())
                 {
                     float rt = Time.time - onsetTime;
-                    UnityEngine.Debug.Log($"RT={rt:0.000}s, target distance={targetDistance}, trial n°{trialIndex + 1}");
+                    UnityEngine.Debug.Log($"RT={rt:0.000}s, target distance={targetDistance}, trial n°{trialIndex}");
                     reactionTimes.Add(rt);
                     step = VTISteps.TrialEnd;
                 }
@@ -123,11 +143,10 @@ public class VTITask : IP2ITask
             case VTISteps.TrialEnd:
 
                 taskStep = "TrialEnd";
-                trialIndex++;
                 if (trialIndex >= numberOfTrials)
                 {
                     UnityEngine.Debug.Log("END EXPERIMENT");
-                    UnityEngine.Debug.Log("=== REACTION TIMES ===");
+                    UnityEngine.Debug.Log("=== REACTION TIMES (s) ===");
                     UnityEngine.Debug.Log(string.Join(", ", reactionTimes.ConvertAll(rt => rt.ToString("0.000"))));
                     UnityEngine.Debug.Log("=== DISTANCES ===");
                     UnityEngine.Debug.Log(string.Join(", ", distancesTrial.ConvertAll(d => d.ToString("0.00"))));
@@ -165,6 +184,7 @@ public class VTITask : IP2ITask
 
         if (!isControlTrial && !beeped && currentDistance <= targetDistance)
         {
+            //sPort.Write(mtxVibComm, 0, mtxVibComm.Length);
             AudioService.PlayBeep();
             UnityEngine.Debug.Log("STIMULUS ONSET");
             beeped = true;
@@ -177,7 +197,7 @@ public class VTITask : IP2ITask
         {
             if (isControlTrial)
             {
-                UnityEngine.Debug.Log($"CATCH TRIAL (no onset), trial n°{trialIndex + 1}");
+                UnityEngine.Debug.Log($"CATCH TRIAL (no onset), trial n°{trialIndex}");
                 step = VTISteps.TrialEnd;
             }
         }
@@ -192,6 +212,12 @@ public class VTITask : IP2ITask
 
         if (hand != null) GameObject.Destroy(hand);
         hand = null;
+
+        if (dataSaved == false)
+        {
+            SaveVTIData();
+            dataSaved = true;
+        }
     }
 
     private GameObject Spawn(string resourcePath, Vector3 pos)
@@ -222,6 +248,7 @@ public class VTITask : IP2ITask
     private void LaunchNewTrial()
     {
         // Reset
+        trialIndex++;
         beeped = false;
         step = VTISteps.TrialRunning;
         moveStartTime = Time.time;
@@ -233,11 +260,34 @@ public class VTITask : IP2ITask
 
         SpawnSphere();
 
-        targetDistance = shuffledNewDistancesList[trialIndex];
+        targetDistance = shuffledNewDistancesList[trialIndex - 1];
 
         if (targetDistance == -1f)
             isControlTrial = true;
 
+    }
+
+    public void SaveVTIData()
+    {
+        VTIData data = new VTIData();
+
+        int count = Mathf.Min(distancesTrial.Count, reactionTimes.Count);
+
+        for (int i = 0; i < count; i++)
+        {
+            VTITrialData trial = new VTITrialData
+            {
+                distance = Mathf.RoundToInt(distancesTrial[i] * 100),
+                reactionTime = reactionTimes[i] * 1000
+            };
+
+            data.trials.Add(trial);
+        }
+
+        string json = JsonUtility.ToJson(data, true);
+
+        string fileName = $"VTI_{System.DateTime.Now:yyyyMMdd_HHmmss}.json";
+        JsonSaver.SaveJson(json, fileName);
     }
 }
 

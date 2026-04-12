@@ -104,6 +104,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "SliderAdjust",
+                    "type": "Value",
+                    "id": "63a070c4-6fee-4785-a1db-42fd75cef6f0",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -579,6 +588,17 @@
                     "action": "HeadLook",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "5a6dd5dd-16c6-4efb-b1ff-dd3fafab2904",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SliderAdjust",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
