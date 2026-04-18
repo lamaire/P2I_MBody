@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public static class AudioService
+public static class AudioManager
 {
     static AudioSource source;
     static AudioClip beepClip;

@@ -127,7 +127,7 @@ public class TBTask : IP2ITask
                 if (trialSw.ElapsedMilliseconds >= targetDuration)
                 {
                     trialSw.Reset();
-                    AudioService.PlayBeep();
+                    AudioManager.PlayBeep();
                     UnityEngine.Debug.Log("Beep played !");
                     step = TBSteps.WaitingResponse;
                 }

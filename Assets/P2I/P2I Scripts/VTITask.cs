@@ -185,7 +185,7 @@ public class VTITask : IP2ITask
         if (!isControlTrial && !beeped && currentDistance <= targetDistance)
         {
             //sPort.Write(mtxVibComm, 0, mtxVibComm.Length);
-            AudioService.PlayBeep();
+            AudioManager.PlayBeep();
             UnityEngine.Debug.Log("STIMULUS ONSET");
             beeped = true;
             step = VTISteps.WaitingResponse;
