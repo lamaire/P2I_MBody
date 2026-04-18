@@ -3,6 +3,7 @@ from collections import defaultdict
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from datetime import datetime
 
 files = [
     "TB_P001.json",
@@ -29,8 +30,16 @@ for file_name in files:
 df = pd.DataFrame(rows)
 df = df.sort_values("trueDelay")
 
-# print(df)
-# print(df.groupby("distance").size())
+# Export Excel
+mean_df = df.groupby("trueDelay", as_index=False)["estimatedDelay"].mean()
+mean_df = mean_df.rename(columns={"estimatedDelay": "meanEstimatedDelay"})
+
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+file_name = f"resultats_TB_{timestamp}.xlsx"
+
+with pd.ExcelWriter(file_name, engine="openpyxl") as writer:
+    df.to_excel(writer, sheet_name="Donnees_brutes", index=False)
+    mean_df.to_excel(writer, sheet_name="Moyennes", index=False)
 
 plt.figure(figsize=(10, 6))
 
