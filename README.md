@@ -21,7 +21,7 @@ git clone https://github.com/lamaire/P2I_MBody.git
 #### Tâches Expérimentale (C#)
   > Assets > P2I > P2I Scripts
 #### Tests Unitaires
-  > Assets > P2I > P2I Tests > EditMode
+  > Assets > Tests > EditMode
 #### Analyse des données (Python)
   > P2I Analysis
 ---
