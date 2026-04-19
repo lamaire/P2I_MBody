@@ -2,23 +2,22 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEditor;
 
-/// <summary>
-/// Tests utilitaires pour la logique pure de VTITask :
-/// construction des listes de distances, catch trials,
-/// conversion des unités et sérialisation des données.
-/// Ces tests ne dépendent pas du runtime Unity (pas de MonoBehaviour).
-/// </summary>
+// Tests utilitaires pour la logique pure de VTITask :
+// construction des listes de distances, catch trials,
+// conversion des unités et sérialisation des données.
+// Ces tests ne dépendent pas du runtime Unity (pas de MonoBehaviour).
+
 [TestFixture]
 public class VTITaskLogicTests
 {
-    // ─── Helpers reproduisant la logique de VTITask ─────────────────────────
+    // Reproduction de la logique de VTITask 
 
     private static List<float> BaseDistances => new List<float> { 0.15f, 0.30f, 0.45f, 0.60f, 0.75f, 0.90f };
 
-    /// <summary>
-    /// Reproduit la logique de construction de la liste shufflée (sans le shuffle).
-    /// </summary>
+    // Méthode qui reproduit la logique de construction de la liste (sans randomisation)
+
     private List<float> BuildDistanceList(int numberOfTrials, float catchMarker = -1f)
     {
         int numberOfCatchTrials = Mathf.RoundToInt(numberOfTrials * 0.15f);
@@ -38,7 +37,7 @@ public class VTITaskLogicTests
         return list;
     }
 
-    // ─── Nombre de trials ───────────────────────────────────────────────────
+    //  Nombre de trials 
 
     [Test]
     public void BuildDistanceList_TotalCount_MatchesNumberOfTrials()
@@ -57,7 +56,7 @@ public class VTITaskLogicTests
         Assert.AreEqual(n, list.Count);
     }
 
-    // ─── Catch trials ───────────────────────────────────────────────────────
+    //  Catch trials 
 
     [Test]
     public void BuildDistanceList_CatchTrials_Are15Percent()
@@ -91,7 +90,7 @@ public class VTITaskLogicTests
         }
     }
 
-    // ─── distancesTrial (sans catch) ────────────────────────────────────────
+    //  distancesTrial (sans catch) 
 
     [Test]
     public void DistancesTrial_ExcludesCatchTrials()
@@ -113,7 +112,7 @@ public class VTITaskLogicTests
         Assert.AreEqual(n - catchCount, distancesTrial.Count);
     }
 
-    // ─── Conversion des unités ──────────────────────────────────────────────
+    //  Conversion des unités 
 
     [Test]
     public void DistanceConversion_MetersToIntCm_IsCorrect()
@@ -136,7 +135,7 @@ public class VTITaskLogicTests
         Assert.AreEqual(312f, rtMs, 0.001f);
     }
 
-    // ─── Sérialisation VTIData ──────────────────────────────────────────────
+    //  Sérialisation VTIData 
 
     [Test]
     public void SaveVTIData_Json_ContainsExpectedFields()

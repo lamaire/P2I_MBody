@@ -2,18 +2,18 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEditor;
 
-/// <summary>
-/// Tests utilitaires pour la logique pure de TBTask :
-/// construction des listes de durées, estimation, shuffling,
-/// et sérialisation des données.
-/// </summary>
+// Tests utilitaires pour la logique pure de TBTask :
+// construction des listes de durées, estimation, shuffling,
+// et sérialisation des données.
+
 [TestFixture]
 public class TBTaskLogicTests
 {
     private static readonly List<int> BaseDurations = new List<int> { 300, 500, 700 };
 
-    // ─── Helper : reproduit la logique EnterTask de TBTask ──────────────────
+    // Méthode qui reproduit la logique de construction de la liste
 
     private List<int> BuildDurationList(int numberOfTrials)
     {
@@ -27,10 +27,10 @@ public class TBTaskLogicTests
             index++;
         }
 
-        return list; // non shufflée pour les tests déterministes
+        return list; // non randomisée
     }
 
-    // ─── Nombre de trials ───────────────────────────────────────────────────
+    //  Nombre de trials 
 
     [Test]
     public void BuildDurationList_TotalCount_MatchesNumberOfTrials()
@@ -49,7 +49,7 @@ public class TBTaskLogicTests
         Assert.AreEqual(n, list.Count);
     }
 
-    // ─── Contenu des durées ─────────────────────────────────────────────────
+    //  Contenu des durées 
 
     [Test]
     public void BuildDurationList_AllValues_AreFromBaseDurations()
@@ -80,7 +80,7 @@ public class TBTaskLogicTests
         Assert.IsTrue(list.Contains(700));
     }
 
-    // ─── Estimation & enregistrement ────────────────────────────────────────
+    // Estimation & enregistrement 
 
     [Test]
     public void RegisterEstimation_RoundToInt_IsCorrect()
@@ -99,12 +99,12 @@ public class TBTaskLogicTests
         Assert.AreEqual(n, estimated.Count);
     }
 
-    // ─── SaveTBData : appariement min ───────────────────────────────────────
+    //  SaveTBData : appariement min 
 
     [Test]
     public void SaveTBData_UsesMin_WhenListsDiffer()
     {
-        var durations   = new List<int> { 300, 500, 700 };
+        var durations = new List<int> { 300, 500, 700 };
         var estimations = new List<int> { 310, 480 }; // une de moins
 
         int count = Mathf.Min(durations.Count, estimations.Count);
@@ -114,14 +114,14 @@ public class TBTaskLogicTests
     [Test]
     public void SaveTBData_UsesMin_WhenListsEqual()
     {
-        var durations   = new List<int> { 300, 500, 700 };
+        var durations = new List<int> { 300, 500, 700 };
         var estimations = new List<int> { 310, 480, 720 };
 
         int count = Mathf.Min(durations.Count, estimations.Count);
         Assert.AreEqual(3, count);
     }
 
-    // ─── Sérialisation TBData ───────────────────────────────────────────────
+    //  Sérialisation TBData 
 
     [Test]
     public void SaveTBData_Json_ContainsExpectedFields()
@@ -141,7 +141,7 @@ public class TBTaskLogicTests
     [Test]
     public void SaveTBData_Json_RoundtripPreservesAllTrials()
     {
-        var durations   = new List<int> { 300, 500, 700 };
+        var durations = new List<int> { 300, 500, 700 };
         var estimations = new List<int> { 310, 490, 680 };
 
         var data = new TBData();
@@ -150,7 +150,7 @@ public class TBTaskLogicTests
         {
             data.trials.Add(new TBTrialData
             {
-                trueDelay      = durations[i],
+                trueDelay = durations[i],
                 estimatedDelay = estimations[i]
             });
         }
@@ -176,7 +176,7 @@ public class TBTaskLogicTests
         Assert.AreEqual(0, restored.trials.Count);
     }
 
-    // ─── Logique du slider ──────────────────────────────────────────────────
+    //  Logique du slider 
 
     [Test]
     public void SliderClamp_ValueStaysInBounds()

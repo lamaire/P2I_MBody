@@ -1,12 +1,12 @@
 using NUnit.Framework;
 using System.IO;
 using UnityEngine;
+using UnityEditor;
 
-/// <summary>
-/// Tests utilitaires pour JsonSaver.
-/// Redirection temporairement les sauvegardes vers un dossier temporaire
-/// pour éviter de polluer le disque en prod.
-/// </summary>
+// Tests utilitaires pour JsonSaver.
+// JsonSaver.SaveJson utilise Application.dataPath (indisponible en EditMode),
+// donc la logique StreamWriter est testée directement dans un dossier temporaire isolé.
+
 [TestFixture]
 public class JsonSaverTests
 {
@@ -28,16 +28,16 @@ public class JsonSaverTests
             Directory.Delete(tempFolder, recursive: true);
     }
 
+    // Reproduit la logique de JsonSaver.SaveJson sans Application.dataPath
     private void SaveToTemp(string json, string fileName)
     {
+        Directory.CreateDirectory(tempFolder);
         string path = Path.Combine(tempFolder, fileName);
         using (StreamWriter writer = new StreamWriter(path))
-        {
             writer.Write(json);
-        }
     }
 
-    // ─── Tests ──────────────────────────────────────────────────────────────
+    //  Tests 
 
     [Test]
     public void SaveJson_CreatesFile()

@@ -1,15 +1,15 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
-/// <summary>
-/// Tests utilitaires pour les modèles de données VTI et TB.
-/// Vérifie la sérialisation JSON et l'intégrité des structures.
-/// </summary>
+// Tests utilitaires pour les modèles de données VTI et TB.
+// Vérifie la sérialisation JSON et l'intégrité des structures.
+
 [TestFixture]
 public class DataModelsTests
 {
-    // ─── VTITrialData ───────────────────────────────────────────────────────
+    //  VTITrialData 
 
     [Test]
     public void VTITrialData_DefaultValues_AreZero()
@@ -27,7 +27,7 @@ public class DataModelsTests
         Assert.AreEqual(312.5f, trial.reactionTime, 0.001f);
     }
 
-    // ─── VTIData ────────────────────────────────────────────────────────────
+    //  VTIData
 
     [Test]
     public void VTIData_TaskName_IsVTI()
@@ -81,7 +81,7 @@ public class DataModelsTests
         Assert.AreEqual(0, restored.trials.Count);
     }
 
-    // ─── TBTrialData ────────────────────────────────────────────────────────
+    //  TBTrialData
 
     [Test]
     public void TBTrialData_DefaultValues_AreZero()
@@ -99,7 +99,7 @@ public class DataModelsTests
         Assert.AreEqual(480, trial.estimatedDelay);
     }
 
-    // ─── TBData ─────────────────────────────────────────────────────────────
+    // TBData
 
     [Test]
     public void TBData_TaskName_IsTB()
