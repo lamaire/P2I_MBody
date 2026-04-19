@@ -10,6 +10,9 @@ git clone https://github.com/lamaire/P2I_MBody.git
 Scripts des tâches C# : 
   > Assets > P2I > P2I Scripts
 
+Scripts des tests unitaires : 
+  > Assets > P2I > P2I Tests
+
 Scripts d'analyse Python : 
   > P2I Analysis
 
