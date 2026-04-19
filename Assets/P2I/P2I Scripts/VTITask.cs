@@ -95,6 +95,8 @@ public class VTITask : IP2ITask
         LaunchNewTrial();
     }
 
+    // Vibrators Set up
+
     // private void SetupVibr()
     // {
     //     sPort = new SerialPort
