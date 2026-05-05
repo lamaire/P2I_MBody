@@ -25,6 +25,7 @@ public class TBTask : IP2ITask
     private List<int> shuffledNewDurationsList = new List<int>();
 
     // ADDED : Slider
+    private GameObject sliderFb;
     private CanvasGroup sliderCanvasGroup;
     private Slider slider;
     private TMP_Text sliderValueText;
@@ -60,24 +61,7 @@ public class TBTask : IP2ITask
         trialIndex = 0;
         estimatedDurations.Clear();
 
-        // ADDED : Slider & Instructions
-        GameObject wall = GameObject.Find("CanvaWallFront");
-
-        Transform infoTf = wall.transform.Find("TextInfoForSubject");
-        Transform sliderTf = wall.transform.Find("SliderFeedback");
-
-        sliderValueText = sliderTf.Find("ValueText").GetComponent<TMP_Text>();
-        sliderMinText = sliderTf.Find("MinText").GetComponent<TMP_Text>();
-        sliderMaxText = sliderTf.Find("MaxText").GetComponent<TMP_Text>();
-
-        instructionText = infoTf.GetComponent<TMP_Text>();
-        instructionCanvasGroup = infoTf.GetComponent<CanvasGroup>();
-
-        slider = sliderTf.GetComponent<Slider>();
-        sliderCanvasGroup = sliderTf.GetComponent<CanvasGroup>();
-
-        HideInstructions();
-        HideSlider();
+        InitTBTask(); // Slider and Instructions
 
         // Durations
         var index = 0;
@@ -153,7 +137,7 @@ public class TBTask : IP2ITask
             case TBSteps.TrialEnd:
 
                 taskStep = "TrialEnd";
-                HideSlider(); // ADDED
+                HideSlider();
 
                 if (trialIndex >= numberOfTrials)
                 {
@@ -182,9 +166,12 @@ public class TBTask : IP2ITask
     {
         step = TBSteps.Finished;
         headLook.ExitHeadLook();
-        //ADDED
+
         HideSlider();
         HideInstructions();
+
+        if (sliderFb != null) GameObject.Destroy(sliderFb);
+        sliderFb = null;
 
         if (dataSaved == false)
         {
@@ -199,7 +186,7 @@ public class TBTask : IP2ITask
         trialIndex++;
         step = TBSteps.TrialRunning;
         targetDuration = shuffledNewDurationsList[trialIndex - 1];
-        ResetSlider(); //ADDED
+        ResetSlider();
     }
 
     public void RegisterEstimation(float estimate)
@@ -209,7 +196,6 @@ public class TBTask : IP2ITask
         step = TBSteps.TrialEnd;
     }
 
-    //ADDED
     private void ShowSlider()
     {
         sliderCanvasGroup.alpha = 1f;
@@ -219,6 +205,7 @@ public class TBTask : IP2ITask
 
     private void HideSlider()
     {
+        if (sliderCanvasGroup == null) return;
         sliderCanvasGroup.alpha = 0f;
         sliderCanvasGroup.interactable = false;
         sliderCanvasGroup.blocksRaycasts = false;
@@ -266,7 +253,6 @@ public class TBTask : IP2ITask
         instructionCanvasGroup.alpha = 0f;
         instructionCanvasGroup.interactable = false;
         instructionCanvasGroup.blocksRaycasts = false;
-
     }
 
     public void SaveTBData()
@@ -288,6 +274,30 @@ public class TBTask : IP2ITask
 
         string fileName = $"TB_{System.DateTime.Now:yyyyMMdd_HHmmss}.json";
         JsonSaver.SaveJson(json, fileName);
+    }
+
+    public void InitTBTask()
+    {
+        GameObject wall = GameObject.Find("CanvaWallFront");
+        var sliderPrefab = Resources.Load<GameObject>("UISlider");
+        sliderFb = GameObject.Instantiate(sliderPrefab, wall.transform, false);
+
+        Transform sliderTf = sliderFb.transform;
+        Transform infoTf = wall.transform.Find("TextInfoForSubject");
+        // Transform sliderTf = wall.transform.Find("SliderFeedback");
+
+        sliderValueText = sliderTf.Find("ValueText").GetComponent<TMP_Text>();
+        sliderMinText = sliderTf.Find("MinText").GetComponent<TMP_Text>();
+        sliderMaxText = sliderTf.Find("MaxText").GetComponent<TMP_Text>();
+
+        instructionText = infoTf.GetComponent<TMP_Text>();
+        instructionCanvasGroup = infoTf.GetComponent<CanvasGroup>();
+
+        slider = sliderTf.GetComponent<Slider>();
+        sliderCanvasGroup = sliderTf.GetComponent<CanvasGroup>();
+
+        HideInstructions();
+        HideSlider();
     }
 
 }

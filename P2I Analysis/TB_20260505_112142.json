@@ -1,0 +1,9 @@
+{
+    "taskName": "TB",
+    "trials": [
+        {
+            "trueDelay": 300,
+            "estimatedDelay": 748
+        }
+    ]
+}

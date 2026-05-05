@@ -230,10 +230,12 @@ public class VTITask : IP2ITask
 
     private void SpawnSphere()
     {
-        endPos = new Vector3(handPos.x - 0.1f, handPos.y, handPos.z + 0.5f);
-        startPos = new Vector3(handPos.x - 0.5f, handPos.y - 0.1f, handPos.z + 2f);
+        endPos = new Vector3(handPos.x, handPos.y, handPos.z);
+        // Transform wallFront = GameObject.Find("WallFront").GetComponent<Transform>();
+        startPos = new Vector3(handPos.x - 0.4f, handPos.y - 0.5f, handPos.z + 2);
+
         stimulus = Spawn("Sphere", startPos);
-        stimulus.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        stimulus.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         var renderer = stimulus.GetComponent<Renderer>();
         renderer.material.color = Color.red;
     }
