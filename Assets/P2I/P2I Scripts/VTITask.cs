@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+// using System.Threading.Tasks.Dataflow;
 
 public class VTITask : IP2ITask
 {
@@ -19,6 +20,7 @@ public class VTITask : IP2ITask
     float moveStartTime;
     float onsetTime;
     bool beeped;
+    Transform roomTf = GameObject.Find("Room").transform;
 
     // Vibrators
     // byte[] mtxVibComm;
@@ -230,9 +232,13 @@ public class VTITask : IP2ITask
 
     private void SpawnSphere()
     {
-        endPos = new Vector3(handPos.x, handPos.y, handPos.z);
-        // Transform wallFront = GameObject.Find("WallFront").GetComponent<Transform>();
-        startPos = new Vector3(handPos.x - 0.4f, handPos.y - 0.5f, handPos.z + 2);
+        // endPos = new Vector3(handPos.x, handPos.y, handPos.z);
+        // // Transform wallFront = GameObject.Find("WallFront").GetComponent<Transform>();
+        // // startPos = new Vector3(handPos.x - 0.4f, handPos.y - 0.5f, handPos.z + 2);
+        // startPos = new Vector3(handPos.x, handPos.y, handPos.z + 1.5f);
+
+        endPos = handPos;
+        startPos = handPos + roomTf.forward * 1.5f;
 
         stimulus = Spawn("Sphere", startPos);
         stimulus.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
